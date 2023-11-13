@@ -26,18 +26,6 @@ function Main() {
 
 	return (
 		<>
-			{/* {incomingVoiceCall && <IncomingVideoCall />}
-			{incomingVideoCall && <IncomingVideoCall />}
-			{videoCall && (
-				<div className="h-screen w-screen max-h-full overflow-hidden">
-					<VideoCall />
-				</div>
-			)}
-			{voiceCall && (
-				<div className="h-screen w-screen max-h-full overflow-hidden">
-					<VoiceCall />
-				</div>
-			)} */}
 			<Empty userInfo={userInfo} />
 		</>
 	);

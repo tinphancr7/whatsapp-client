@@ -17,10 +17,8 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
 		<html lang="en">
 			<body className={inter.className}>
 				<AuthenticationProvider>
-					<SocketWrapper>
-						{children}
-						<div id="photo-picker-element"></div>
-					</SocketWrapper>
+					{children}
+					<div id="photo-picker-element"></div>
 				</AuthenticationProvider>
 
 				<ToastContainer

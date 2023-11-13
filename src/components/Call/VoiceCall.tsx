@@ -2,8 +2,8 @@ import React, {useEffect} from "react";
 import Container from "./Container";
 import {useAuthentication} from "@/contexts/app.context";
 
-function VoiceCall() {
-	const {userInfo, videoCall, voiceCall, socket} = useAuthentication();
+function VoiceCall({voiceCall}: any) {
+	const {userInfo, socket} = useAuthentication();
 	useEffect(() => {
 		if (voiceCall.callType === "out-going") {
 			socket.current.emit("outgoing-voice-call", {

@@ -46,13 +46,13 @@ function ContactsList({setPageType}: any) {
 							</div>
 						</div>
 					</div>
-					{Object.entries(allContacts).map(([initialLetter, userList]) => {
+					{Object.entries(allContacts).map(([initialLetter, userList]: any) => {
 						return (
 							<div key={Date.now() + initialLetter}>
 								<div className="text-teal-light pl-10 py-5 ">
 									{initialLetter}
 								</div>
-								{userList.map((contact, index) => {
+								{userList.map((contact: any, index: number) => {
 									return (
 										<div key={index}>
 											<ChatListItem data={contact} />

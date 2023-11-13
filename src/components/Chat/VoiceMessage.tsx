@@ -1,6 +1,6 @@
 import React from "react";
 
-function VoiceMessage() {
+function VoiceMessage({message}: any) {
 	return <div>VoiceMessage</div>;
 }
 

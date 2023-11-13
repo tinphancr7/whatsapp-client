@@ -57,7 +57,7 @@ function ChatContainer({messages, currentChatUser}: ChatContainerProps) {
 										currentChatUser={currentChatUser}
 									/>
 								)}
-								{/* {message.type === "voice" && <VoiceMessage message={message} />} */}
+								{message.type === "voice" && <VoiceMessage message={message} />}
 							</div>
 						))}
 					</div>

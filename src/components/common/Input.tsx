@@ -1,4 +1,4 @@
-function Input({name, state, setState, label = false}) {
+function Input({name, state, setState, label = false}: any) {
 	return (
 		<div className="flex gap-1 flex-col">
 			{label && (
@@ -13,7 +13,6 @@ function Input({name, state, setState, label = false}) {
 					value={state}
 					onChange={(e) => setState(e.target.value)}
 					className="bg-input-background text-start focus:outline-none "
-					I
 				/>
 			</div>
 		</div>

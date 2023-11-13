@@ -3,8 +3,8 @@ import Image from "next/image";
 import React, {useState} from "react";
 import {MdOutlineCallEnd} from "react-icons/md";
 
-function Container({data}) {
-	const {userInfo, videoCall, socket} = useAuthentication();
+function Container({data}: any) {
+	const {userInfo, socket} = useAuthentication();
 	const [callAccepted, setCallAccepted] = useState(false);
 	const endCall = () => {
 		const id = data._id;
@@ -17,9 +17,9 @@ function Container({data}) {
 				from: id,
 			});
 		}
-		dispatch({
-			type: reducerCases.END_CALL,
-		});
+		// dispatch({
+		// 	type: reducerCases.END_CALL,
+		// });
 	};
 	return (
 		<div className="border-conversation-border border-l w-full bg-conversation-panel-background flex flex-col h-[100vh]  overflow-hidden items-center justify-center text-white">

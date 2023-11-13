@@ -7,7 +7,6 @@ import {ImAttachment} from "react-icons/im";
 import {MdSend} from "react-icons/md";
 import PhotoPicker from "../common/PhotoPicker";
 import CaptureAudio from "../common/CaptureAudio";
-import {useAuthentication} from "@/contexts/app.context";
 import {ADD_IMAGE_MESSAGE_ROUTE, ADD_MESSAGE_ROUTE} from "@/utils/APIRoutes";
 
 function MessageBar({setMessages, currentChatUser, userInfo, socket}: any) {
@@ -33,13 +32,13 @@ function MessageBar({setMessages, currentChatUser, userInfo, socket}: any) {
 	}, []);
 	const [message, setMessage] = useState("");
 
-	const photoPickerChange = (e: any) => {
+	const photoPickerChange = async (e: any) => {
 		try {
 			const file = e.target.files[0];
 
 			const formData = new FormData();
 			formData.append("image", file);
-			const response = axios.post(ADD_IMAGE_MESSAGE_ROUTE, formData, {
+			const response = await axios.post(ADD_IMAGE_MESSAGE_ROUTE, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
@@ -48,6 +47,7 @@ function MessageBar({setMessages, currentChatUser, userInfo, socket}: any) {
 					to: currentChatUser._id,
 				},
 			});
+
 			if (response.status == 201) {
 				socket.current.emit("send-msg", {
 					to: currentChatUser?._id,
@@ -60,14 +60,13 @@ function MessageBar({setMessages, currentChatUser, userInfo, socket}: any) {
 						...response.data.message,
 					},
 				]);
-				setMessage("");
 			}
 		} catch (error) {}
 	};
 
 	useEffect(() => {
 		if (grabPhoto) {
-			const data = document.getElementById("photo-picker");
+			const data = document.getElementById("photo-picker") as any;
 			data.click();
 			document.body.onfocus = (e) => {
 				setTimeout(() => {
@@ -75,7 +74,7 @@ function MessageBar({setMessages, currentChatUser, userInfo, socket}: any) {
 				}, 1000);
 			};
 		}
-	});
+	}, [grabPhoto]);
 	const handleEmojiModal = () => {
 		setShowEmojiPicker(!showEmojiPicker);
 	};
@@ -160,7 +159,14 @@ function MessageBar({setMessages, currentChatUser, userInfo, socket}: any) {
 					</>
 				)}
 				{grabPhoto && <PhotoPicker onChange={photoPickerChange} />}
-				{showAudioRecorder && <CaptureAudio hide={setShowAudioRecorder} />}
+				{showAudioRecorder && (
+					<CaptureAudio
+						hide={setShowAudioRecorder}
+						currentChatUser={currentChatUser}
+						setMessage={setMessage}
+						setMessages={setMessages}
+					/>
+				)}
 			</>
 		</div>
 	);

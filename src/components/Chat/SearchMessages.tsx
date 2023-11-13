@@ -1,19 +1,21 @@
-import {useAuthentication} from "@/contexts/app.context";
 import {calculateTime} from "@/utils/CalculateTime";
 import React, {useEffect, useState} from "react";
 import {BiSearchAlt2} from "react-icons/bi";
 import {IoClose} from "react-icons/io5";
 
-function SearchMessages() {
-	const {currentChatUser, messages, messageSearch, setMessageSearch} =
-		useAuthentication();
+function SearchMessages({
+	messages,
+	currentChatUser,
+	messageSearch,
+	setMessageSearch,
+}: any) {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchedMessages, setSearchedMessages] = useState([]);
 
 	useEffect(() => {
 		if (searchTerm) {
 			const filteredMessages = messages.filter(
-				(message) =>
+				(message: any) =>
 					message.type === "text" &&
 					message.message.toLowerCase().includes(searchTerm.toLowerCase())
 			);
@@ -61,7 +63,7 @@ function SearchMessages() {
 						</span>
 					)}
 					<div className="flex flex-col w-full ">
-						{searchedMessages.map((message, index) => (
+						{searchedMessages.map((message: any, index: number) => (
 							<div
 								key={index}
 								className="flex cursor-pointer justify-center hover:bg-background-default-hover w-full px-5 border-b-[0.1px] border-secondary py-5"

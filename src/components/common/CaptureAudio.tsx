@@ -1,22 +1,44 @@
-import {ADD_AUDIO_MESSAGE_ROUTE} from "@/utils/ApiRoutes";
-import React, {useEffect} from "react";
-import {FaMicrophone, FaPauseCircle, FaPlay, FaTrash} from "react-icons/fa";
+import {useAuthentication} from "@/contexts/app.context";
+import {ADD_AUDIO_MESSAGE_ROUTE} from "@/utils/APIRoutes";
+import axios from "axios";
+import React, {useEffect, useRef, useState} from "react";
+import {
+	FaMicrophone,
+	FaPauseCircle,
+	FaPlay,
+	FaStop,
+	FaTrash,
+} from "react-icons/fa";
 import {MdSend} from "react-icons/md";
+import WaveSurfer from "wavesurfer.js";
 
-function CaptureAudio({hide}) {
-	const [{userInfo, currentChatUser, socket}, dispatch] = useStateProvider();
+function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
+	const {userInfo, socket} = useAuthentication();
 	const [isRecording, setIsRecording] = useState(false);
-	const [recordedAudio, setRecordedAudio] = useState(null);
-	const [waveForm, setWaveForm] = useState(null);
-	const [recordingDuration, setRecordingDuration] = useState(0);
-	const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
-	const [totalDuration, setTotalDuration] = useState(0);
-	const [isPlaying, setIsPlaying] = useState(false);
+	const [recordedAudio, setRecordedAudio] = useState<any>(null);
+	const [waveForm, setWaveForm] = useState<any>(null);
+	const [recordingDuration, setRecordingDuration] = useState<any>(0);
+	const [currentPlaybackTime, setCurrentPlaybackTime] = useState<any>(0);
+	const [totalDuration, setTotalDuration] = useState<any>(0);
+	const [isPlaying, setIsPlaying] = useState<any>(false);
+	const [renderedAudio, setRenderedAudio] = useState<any>(null);
 
-	const audioRef = useRef(null);
-	const mediaRecorderRef = useRef(null);
-	const waveFormRef = useRef(null);
+	const audioRef = useRef<any>(null);
+	const mediaRecorderRef = useRef<any>(null);
+	const waveFormRef = useRef<any>(null);
 
+	useEffect(() => {
+		let interval: any;
+		if (isRecording) {
+			interval = setInterval(() => {
+				setRecordingDuration((prev: any) => {
+					setTotalDuration(prev + 1);
+					return prev + 1;
+				});
+			}, 1000);
+		}
+		return () => clearInterval(interval);
+	}, [isRecording]);
 	useEffect(() => {
 		const waveSurfer = WaveSurfer.create({
 			container: waveFormRef.current,
@@ -25,11 +47,10 @@ function CaptureAudio({hide}) {
 			cursorColor: "#7ae3c3",
 			barWidth: 2,
 			barRadius: 3,
-			responsive: true,
-			height: 40,
+			height: 30,
 			barGap: 3,
-			barMinHeight: 0.5,
 		});
+
 		setWaveForm(waveSurfer);
 		waveSurfer.on("finish", () => {
 			setIsPlaying(false);
@@ -43,20 +64,42 @@ function CaptureAudio({hide}) {
 			handleStartRecording();
 		}
 	}, [waveForm]);
-	const handlePlayRecording = () => {};
-	const handlePauseRecording = () => {};
+
+	useEffect(() => {
+		if (recordedAudio) {
+			const updatePlaybackTime = () => {
+				setCurrentPlaybackTime(recordedAudio.currentTime);
+			};
+			recordedAudio.addEventListener("timeupdate", updatePlaybackTime);
+			return () => {
+				recordedAudio.removeEventListener("timeupdate", updatePlaybackTime);
+			};
+		}
+	}, [recordedAudio]);
+	const handlePlayRecording = () => {
+		if (recordedAudio) {
+			waveForm.stop();
+			waveForm.play();
+			recordedAudio.play();
+			setIsPlaying(true);
+		}
+	};
+	const handlePauseRecording = () => {
+		waveForm.stop();
+		recordedAudio.pause();
+		setIsPlaying(false);
+	};
 	const handleStartRecording = () => {
 		try {
 			setRecordingDuration(0);
-			setIsRecording(true);
 			setCurrentPlaybackTime(0);
 			setTotalDuration(0);
 			setIsRecording(true);
-			setRecordedAudio(null);
 			navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
 				const mediaRecorder = new MediaRecorder(stream);
-				mediaRecorderRef.current.srcObject = stream;
-				const chunks = [];
+				mediaRecorderRef.current = mediaRecorder;
+				audioRef.current.srcObject = stream;
+				const chunks: any = [];
 				mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
 				mediaRecorder.onstop = (e) => {
 					const blob = new Blob(chunks, {type: "audio/ogg; codecs=opus"});
@@ -77,10 +120,13 @@ function CaptureAudio({hide}) {
 			setIsRecording(false);
 			waveForm.stop();
 
-			const audioChunks = [];
-			mediaRecorderRef.current.addEventListener("dataavailable", (event) => {
-				audioChunks.push(event.data);
-			});
+			const audioChunks: any = [];
+			mediaRecorderRef.current.addEventListener(
+				"dataavailable",
+				(event: any) => {
+					audioChunks.push(event.data);
+				}
+			);
 			mediaRecorderRef.current.addEventListener("stop", () => {
 				const audioBlob = new Blob(audioChunks, {
 					type: "audio/mp3",
@@ -90,11 +136,11 @@ function CaptureAudio({hide}) {
 			});
 		}
 	};
-	const sendRecording = () => {
+	const sendRecording = async () => {
 		try {
 			const formData = new FormData();
 			formData.append("audio", renderedAudio);
-			const response = axios.post(ADD_AUDIO_MESSAGE_ROUTE, formData, {
+			const response = await axios.post(ADD_AUDIO_MESSAGE_ROUTE, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
@@ -109,19 +155,19 @@ function CaptureAudio({hide}) {
 					from: userInfo?._id,
 					message: response.data.message,
 				});
-				dispatch({
-					type: reducerCases.ADD_MESSAGE,
-					newMessage: {
+
+				setMessages((prevMessages: any) => [
+					...prevMessages,
+					{
 						...response.data.message,
 					},
-					fromSelf: true,
-				});
+				]);
 				setMessage("");
 			}
 		} catch (error) {}
 	};
 
-	const formatTime = (time) => {
+	const formatTime = (time: any) => {
 		if (!time) return "00:00";
 		const minutes = Math.floor(time / 60);
 		const seconds = Math.floor(time % 60);
@@ -132,18 +178,21 @@ function CaptureAudio({hide}) {
 	return (
 		<div className="flex text-2xl w-full items-center justify-end">
 			<div className="pt-1">
-				<FaTrash className="text-panel-header-icon" onClick={() => hide()} />
+				<FaTrash
+					className="text-panel-header-icon cursor-pointer text-sm"
+					onClick={() => hide()}
+				/>
 			</div>
-			<div className="mx-4 py-2 text-white text-lg flex gap-3 items-center justify-center bg-search-input-container-background rounded-full ">
+			<div className="mx-4 py-2 px-4 text-white text-lg flex gap-3 items-center justify-center bg-search-input-container-background rounded-full drop-shadow-sm">
 				{isRecording ? (
-					<div className="text-red-500 animate-pulse z-60 text-center">
+					<div className="text-red-500 animate-pulse z-60 text-center text-xs">
 						Recording <span>{recordingDuration}s</span>
 					</div>
 				) : (
 					<div>
 						{recordedAudio && (
 							<>
-								{isPlaying ? (
+								{!isPlaying ? (
 									<FaPlay onClick={handlePlayRecording} />
 								) : (
 									<FaStop onClick={handlePauseRecording} />

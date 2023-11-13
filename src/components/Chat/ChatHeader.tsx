@@ -1,34 +1,27 @@
 import React from "react";
-import Avatar from "../common/Avatar";
 import {MdCall} from "react-icons/md";
 import {BsThreeDotsVertical} from "react-icons/bs";
 import {IoVideocam} from "react-icons/io5";
 import {BiSearchAlt2} from "react-icons/bi";
-import {useAuthentication} from "@/contexts/app.context";
+
 import Image from "next/image";
 
-function ChatHeader({currentChatUser}: any) {
+function ChatHeader({currentChatUser, setVoiceCall, setVideoCall}: any) {
 	const handleVoiceCall = () => {
-		// dispatch({
-		// 	type: reducerCases.SET_VOICE_CALL,
-		// 	voiceCall: {
-		// 		...currentChatUser,
-		// 		type: "out-going",
-		// 		callType: "voice",
-		// 		roomId: Date.now(),
-		// 	},
-		// });
+		setVoiceCall({
+			...currentChatUser,
+			type: "out-going",
+			callType: "voice",
+			roomId: Date.now(),
+		});
 	};
 	const handleVideoCall = () => {
-		// dispatch({
-		// 	type: reducerCases.SET_VIDEO_CALL,
-		// 	voiceCall: {
-		// 		...currentChatUser,
-		// 		type: "out-going",
-		// 		callType: "video",
-		// 		roomId: Date.now(),
-		// 	},
-		// });
+		setVideoCall({
+			...currentChatUser,
+			type: "out-going",
+			callType: "video",
+			roomId: Date.now(),
+		});
 	};
 	return (
 		<div className="h-16 px-4 py-3 flex justify-between items-center bg-panel-header-background z-10">

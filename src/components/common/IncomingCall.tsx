@@ -1,39 +1,35 @@
-import {useStateProvider} from "@/context/StateContext";
-import {reducerCases} from "@/context/constants";
+import {useAuthentication} from "@/contexts/app.context";
 import Image from "next/image";
 import React from "react";
 
-function IncomingCall() {
-	const [{incomingVoiceCall, socket}, dispatch] = useStateProvider();
+function IncomingCall({
+	incomingVoiceCall,
+	setIncomingVoiceCall,
+	setVoiceCall,
+}: any) {
+	const {socket} = useAuthentication();
 	const acceptCall = () => {
-		dispatch({
-			type: reducerCases.SET_VOICE_CALL,
-			voiceCall: {
-				...incomingVoiceCall,
-				callType: "in-coming",
-			},
+		setVoiceCall({
+			...incomingVoiceCall,
+			callType: "in-coming",
 		});
 		socket.current.emit("accept-incoming-call", {
 			id: incomingVoiceCall?._id,
 		});
-		dispatch({
-			type: reducerCases.SET_INCOMING_VOICE_CALL,
-			incomingVoiceCall: undefined,
-		});
+		setIncomingVoiceCall(null);
 	};
 	const rejectCall = () => {
-		dispatch({
-			type: reducerCases.END_CALL,
-		});
 		socket.current.emit("reject-voice-call", {
 			from: incomingVoiceCall?._id,
 		});
+		setVoiceCall(null);
+		setIncomingVoiceCall(null);
 	};
 	return (
 		<div className="h-24 w-80 fixed bottom-8  mb-0 right-6 z-50 rounded-sm flex gap-5 items-center justify-start p-4 bg-conversation-panel-background text-white drop-shadow-2xl border-icon-green border-2 py-14">
 			<div>
 				<Image
-					src={incomingVoiceCall.profilePicture}
+					src={`data:image/svg+xml;base64,${incomingVoiceCall?.avatarImage}`}
 					alt="avatar"
 					width={70}
 					height={70}
@@ -42,7 +38,7 @@ function IncomingCall() {
 			</div>
 			<div>
 				<div>
-					{incomingVoiceCall.name}
+					{incomingVoiceCall?.username}
 					<div className="text-xs">Incoming Voice Call</div>
 					<div className="flex gap-2 mt-2">
 						<button

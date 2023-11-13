@@ -10,7 +10,7 @@ function ImageMessage({message, currentChatUser}: any) {
 	return (
 		<div
 			className={`p-1 rounded-lg ${
-				message.senderId === currentChatUser._id
+				message.sender === currentChatUser._id
 					? "bg-incoming-background"
 					: "bg-outgoing-background"
 			}`}
@@ -28,7 +28,7 @@ function ImageMessage({message, currentChatUser}: any) {
 						{calculateTime(message?.createdAt)}
 					</span>
 					<span>
-						{message?.senderId === userInfo?._id && (
+						{message?.sender === userInfo?._id && (
 							<MessageStatus status={message.MessageStatus} />
 						)}
 					</span>
