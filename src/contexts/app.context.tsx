@@ -4,12 +4,16 @@ import {getProfileFromLS} from "../utils/auth";
 interface AuthenticationContextInterface {
 	userInfo: any;
 	setUserInfo: (value: any) => void;
+	currentChatUser?: any;
+	setCurrentChatUser?: (value: any) => void;
 	socket: any;
 	setSocket: (value: any) => void;
 }
 const initialAuthenticationContext: AuthenticationContextInterface = {
 	userInfo: getProfileFromLS(),
 	setUserInfo: () => null,
+	currentChatUser: {},
+	setCurrentChatUser: () => null,
 	socket: null,
 	setSocket: () => null,
 };
@@ -21,14 +25,16 @@ const AuthenticationProvider = ({children}: {children: React.ReactNode}) => {
 	const [userInfo, setUserInfo] = useState(
 		initialAuthenticationContext.userInfo
 	);
-
 	const [socket, setSocket] = useState(null);
+	const [currentChatUser, setCurrentChatUser] = useState<any>({});
 
 	return (
 		<AuthenticationContext.Provider
 			value={{
 				userInfo,
 				setUserInfo,
+				currentChatUser,
+				setCurrentChatUser,
 				socket,
 				setSocket,
 			}}

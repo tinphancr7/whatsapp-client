@@ -5,7 +5,7 @@ import React, {useEffect, useState} from "react";
 import ChatListItem from "./ChatListItem";
 
 function List() {
-	const {userInfo} = useAuthentication();
+	const {userInfo, currentChatUser, setCurrentChatUser} = useAuthentication();
 	const [userContacts, setUserContacts] = useState([]);
 	const [onlineUsers, setOnlineUsers] = useState([]);
 
@@ -14,7 +14,7 @@ function List() {
 			try {
 				const {
 					data: {users, onlineUsers},
-				} = await axios(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo.id}`);
+				} = await axios(`${GET_INITIAL_CONTACTS_ROUTE}/${userInfo._id}`);
 				setOnlineUsers(onlineUsers);
 				setUserContacts(users);
 			} catch (error) {}
@@ -22,11 +22,15 @@ function List() {
 		if (userInfo?._id) {
 			getContacts();
 		}
-	}, []);
+	}, [userInfo?._id]);
 	return (
 		<div className="bg-search-input-container-background flex-auto overflow-auto max-h-full custom-scrollbar">
 			{userContacts.map((contact) => (
-				<ChatListItem data={contact} key={contact._id} />
+				<ChatListItem
+					data={contact}
+					key={contact._id}
+					setCurrentChatUser={setCurrentChatUser}
+				/>
 			))}
 		</div>
 	);

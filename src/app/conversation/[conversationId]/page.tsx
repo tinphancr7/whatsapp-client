@@ -15,9 +15,10 @@ import axios from "axios";
 import {useState, useEffect} from "react";
 
 function Chat({params}: {params: any}) {
-	const {userInfo, socket} = useAuthentication();
+	const {userInfo, socket, currentChatUser, setCurrentChatUser} =
+		useAuthentication();
 	const [messages, setMessages] = useState<any>([]);
-	const [currentChatUser, setCurrentChatUser] = useState<any>({});
+
 	const [socketEvent, setSocketEvent] = useState(false);
 	const [messageSearch, setMessageSearch] = useState(false);
 	const [incomingVoiceCall, setIncomingVoiceCall] = useState<any>(null);
@@ -31,7 +32,7 @@ function Chat({params}: {params: any}) {
 				`${GET_USER_ROUTE}/${params.conversationId}`
 			);
 
-			setCurrentChatUser(data.data?.user);
+			setCurrentChatUser(data.data?.user || {});
 		};
 
 		getOtherUser();
@@ -120,6 +121,7 @@ function Chat({params}: {params: any}) {
 									currentChatUser={currentChatUser}
 									setVoiceCall={setVoiceCall}
 									setVideoCall={setVideoCall}
+									setMessageSearch={setMessageSearch}
 								/>
 								<ChatContainer
 									messages={messages}

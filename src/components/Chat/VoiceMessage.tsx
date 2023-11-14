@@ -1,9 +1,13 @@
 import {useAuthentication} from "@/contexts/app.context";
 import {host} from "@/utils/APIRoutes";
+import {calculateTime} from "@/utils/CalculateTime";
+import Image from "next/image";
 import React, {useEffect, useRef, useState} from "react";
+import {FaPlay, FaStop} from "react-icons/fa";
 import WaveSurfer from "wavesurfer.js";
+import MessageStatus from "../common/MessageStatus";
 
-function VoiceMessage({message}: any) {
+function VoiceMessage({message, currentChatUser}: any) {
 	const {userInfo} = useAuthentication();
 	const [audioMessage, setAudioMessage] = useState<any>(null);
 	const [isPlaying, setIsPlaying] = useState(false);
@@ -43,11 +47,7 @@ function VoiceMessage({message}: any) {
 			setTotalDuration(waveForm.current.getDuration());
 		});
 	}, [message.message]);
-	useEffect(() => {
-		if (waveForm) {
-			handleStartRecording();
-		}
-	}, [waveForm]);
+
 	useEffect(() => {
 		if (audioMessage) {
 			const updatePlaybackTime = () => {
@@ -80,7 +80,45 @@ function VoiceMessage({message}: any) {
 			.toString()
 			.padStart(2, "0")}`;
 	};
-	return <div>VoiceMessage</div>;
+	return (
+		<div
+			className={`flex items-center gap-5 text-white px-4 pr-2 py-4 text-sm ${
+				message.sender === currentChatUser._id
+					? "bg-incoming-background"
+					: "bg-outgoing-background"
+			}`}
+		>
+			<div className="h-14 w-14 relative">
+				<Image
+					className="object-cover"
+					fill
+					src={currentChatUser?.profilePicture}
+					alt=""
+				/>
+			</div>
+			<div className="cursor-pointer text-xl">
+				{!isPlaying ? (
+					<FaPlay onClick={handlePlayAudio} />
+				) : (
+					<FaStop onClick={handlePauseAudio} />
+				)}
+			</div>
+			<div className="relative">
+				<div className="w-60" ref={waveFormRef} />
+				<div className="text-bubble-meta pt-1 text-xs flex items-center justify-between absolute w-full bottom-[22px]">
+					<span>
+						{formatTime(isPlaying ? currentPlaybackTime : totalDuration)}
+					</span>
+					<div className="flex gap-1">
+						<span>{calculateTime(message?.createAt)}</span>
+						{message.sender === userInfo._id && (
+							<MessageStatus message={message.MessageStatus} />
+						)}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 }
 
 export default VoiceMessage;

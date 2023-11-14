@@ -3,11 +3,23 @@ import Avatar from "../common/Avatar";
 import {useAuthentication} from "@/contexts/app.context";
 import Image from "next/image";
 import Link from "next/link";
-interface ChatListItemProps {
-	data: any;
-	isContactsPage?: boolean;
-}
-function ChatListItem({data, isContactsPage = false}: ChatListItemProps) {
+
+function ChatListItem({
+	data,
+	isContactsPage = false,
+	setCurrentChatUser,
+	userInfo,
+}: any) {
+	const handleContactClick = () => {
+		if (!isContactsPage) {
+			setCurrentChatUser({
+				...data,
+				_id: userInfo?._id === data?.sender ? data?.receiver : data?.sender,
+			});
+		} else {
+			setCurrentChatUser({...data});
+		}
+	};
 	return (
 		<Link
 			href={`/conversation/${data?._id}`}

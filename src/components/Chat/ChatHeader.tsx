@@ -6,7 +6,12 @@ import {BiSearchAlt2} from "react-icons/bi";
 
 import Image from "next/image";
 
-function ChatHeader({currentChatUser, setVoiceCall, setVideoCall}: any) {
+function ChatHeader({
+	currentChatUser,
+	setVoiceCall,
+	setVideoCall,
+	setMessageSearch,
+}: any) {
 	const handleVoiceCall = () => {
 		setVoiceCall({
 			...currentChatUser,
@@ -52,7 +57,7 @@ function ChatHeader({currentChatUser, setVoiceCall, setVideoCall}: any) {
 				/>
 				<BiSearchAlt2
 					className="text-panel-header-icon cursor-pointer text-xl"
-					// onClick={() => setMessageSearch((messageSearch) => !messageSearch)}
+					onClick={() => setMessageSearch((messageSearch) => !messageSearch)}
 				/>
 				<BsThreeDotsVertical className="text-panel-header-icon cursor-pointer text-xl" />
 			</div>

@@ -26,7 +26,7 @@ function SearchMessages({
 	}, [searchTerm]);
 	return (
 		<div className="border-conversation-border border-l w-full bg-conversation-panel-background flex flex-col z-10 max-h-screen">
-			<div className="h-16 px-4 py-5 gap-10 flex items-center bg-panel-header-background">
+			<div className="h-16 px-4 py-5 gap-10 flex items-center bg-panel-header-background text-primary-strong">
 				<IoClose
 					className="cursor-pointer text-icon-lighter text-2xl"
 					onClick={() => setMessageSearch(!messageSearch)}
@@ -66,9 +66,14 @@ function SearchMessages({
 						{searchedMessages.map((message: any, index: number) => (
 							<div
 								key={index}
-								className="flex cursor-pointer justify-center hover:bg-background-default-hover w-full px-5 border-b-[0.1px] border-secondary py-5"
+								className="flex cursor-pointer flex-col justify-center hover:bg-background-default-hover w-full px-5 border-b-[0.1px] border-secondary py-5"
 							>
-								<div>{calculateTime(message?.createdAt)}</div>
+								<div
+									className="
+								text-sm text-secondary"
+								>
+									{calculateTime(message?.createdAt)}
+								</div>
 								<div className="text-icon-green">{message?.message}</div>
 							</div>
 						))}
