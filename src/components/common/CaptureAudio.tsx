@@ -67,10 +67,11 @@ function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 
 	useEffect(() => {
 		if (recordedAudio) {
+			console.log("recordedAudio", recordedAudio);
 			const updatePlaybackTime = () => {
 				setCurrentPlaybackTime(recordedAudio.currentTime);
 			};
-			recordedAudio.addEventListener("timeupdate", updatePlaybackTime);
+			recordedAudio?.addEventListener("timeupdate", updatePlaybackTime);
 			return () => {
 				recordedAudio.removeEventListener("timeupdate", updatePlaybackTime);
 			};
@@ -95,6 +96,7 @@ function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 			setCurrentPlaybackTime(0);
 			setTotalDuration(0);
 			setIsRecording(true);
+			setRecordedAudio(null);
 			navigator.mediaDevices.getUserMedia({audio: true}).then((stream) => {
 				const mediaRecorder = new MediaRecorder(stream);
 				mediaRecorderRef.current = mediaRecorder;
@@ -105,6 +107,7 @@ function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 					const blob = new Blob(chunks, {type: "audio/ogg; codecs=opus"});
 					const audioURL = window.URL.createObjectURL(blob);
 					const audio = new Audio(audioURL);
+					console.log("audio", audio);
 					setRecordedAudio(audio);
 					waveForm.load(audioURL);
 				};
@@ -132,7 +135,7 @@ function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 					type: "audio/mp3",
 				});
 				const audioFile = new File([audioBlob], "recording.mp3");
-				setRecordedAudio(audioFile);
+				setRenderedAudio(audioFile);
 			});
 		}
 	};
@@ -201,33 +204,32 @@ function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 						)}
 					</div>
 				)}
-				<div className="w-60" ref={waveFormRef} hidden={isRecording}>
-					{recordedAudio && isPlaying && (
-						<span>{formatTime(currentPlaybackTime)}</span>
-					)}
-					{recordedAudio && !isPlaying && (
-						<span>{formatTime(totalDuration)}</span>
-					)}
-					<audio ref={audioRef} hidden />
-					<div className="mr-4">
-						{!isRecording ? (
-							<FaMicrophone
-								className="text-red-500"
-								onClick={handleStartRecording}
-							/>
-						) : (
-							<FaPauseCircle
-								className="text-red-500"
-								onClick={handleStopRecording}
-							/>
-						)}
-					</div>
-					<div>
-						<MdSend
-							className="text-panel-header-icon cursor-pointer mr-4"
-							onClick={sendRecording}
+				<div className="w-60" ref={waveFormRef} hidden={isRecording} />
+				{recordedAudio && isPlaying && (
+					<span>{formatTime(currentPlaybackTime)}</span>
+				)}
+				{recordedAudio && !isPlaying && (
+					<span>{formatTime(totalDuration)}</span>
+				)}
+				<audio ref={audioRef} hidden />
+				<div className="mr-4">
+					{!isRecording ? (
+						<FaMicrophone
+							className="text-red-500 cursor-pointer"
+							onClick={handleStartRecording}
 						/>
-					</div>
+					) : (
+						<FaPauseCircle
+							className="text-red-500 cursor-pointer"
+							onClick={handleStopRecording}
+						/>
+					)}
+				</div>
+				<div>
+					<MdSend
+						className="text-panel-header-icon cursor-pointer mr-4"
+						onClick={sendRecording}
+					/>
 				</div>
 			</div>
 		</div>

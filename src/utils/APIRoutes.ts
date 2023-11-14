@@ -1,4 +1,4 @@
-export const host = "http://localhost:8080";
+export const host = "http://localhost:5000";
 const AUTH_ROUTE = `${host}/api/auth`;
 export const loginRoute = `${AUTH_ROUTE}/login`;
 export const registerRoute = `${AUTH_ROUTE}/register`;

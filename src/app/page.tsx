@@ -1,12 +1,12 @@
 "use client";
-import {io} from "socket.io-client";
+
 import {useAuthentication} from "@/contexts/app.context";
 import {useRouter} from "next/navigation";
 import {useEffect, useRef, useState} from "react";
-import {GET_MESSAGES_ROUTE, host} from "@/utils/APIRoutes";
+
 import Empty from "@/components/Empty";
 
-import axios from "axios";
+import SocketWrapper from "@/components/SocketWrapper";
 
 function Main() {
 	const router = useRouter();
@@ -25,9 +25,9 @@ function Main() {
 	const [socketEvent, setSocketEvent] = useState(false);
 
 	return (
-		<>
+		<SocketWrapper>
 			<Empty userInfo={userInfo} />
-		</>
+		</SocketWrapper>
 	);
 }
 export default Main;
