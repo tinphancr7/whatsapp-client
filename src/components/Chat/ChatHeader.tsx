@@ -5,6 +5,8 @@ import {IoVideocam} from "react-icons/io5";
 import {BiSearchAlt2} from "react-icons/bi";
 
 import Image from "next/image";
+import {isContext} from "vm";
+import ContextMenu from "../common/ContextMenu";
 
 function ChatHeader({
 	currentChatUser,
@@ -60,6 +62,14 @@ function ChatHeader({
 					onClick={() => setMessageSearch((messageSearch) => !messageSearch)}
 				/>
 				<BsThreeDotsVertical className="text-panel-header-icon cursor-pointer text-xl" />
+				{/* {isContextMenuVisible && (
+					<ContextMenu
+						options={contextMenuOptions}
+						coordinates={contextMenuCoordinates}
+						contextMenu={isContextMenuVisible}
+						setContextMenu={setIsContextMenuVisible}
+					/>
+				)} */}
 			</div>
 		</div>
 	);

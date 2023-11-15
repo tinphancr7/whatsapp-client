@@ -14,6 +14,7 @@ import WaveSurfer from "wavesurfer.js";
 
 function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 	const {userInfo, socket} = useAuthentication();
+	console.log("userInfo", userInfo);
 	const [isRecording, setIsRecording] = useState(false);
 	const [recordedAudio, setRecordedAudio] = useState<any>(null);
 	const [waveForm, setWaveForm] = useState<any>(null);
@@ -148,7 +149,7 @@ function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 					"Content-Type": "multipart/form-data",
 				},
 				params: {
-					form: userInfo?._id,
+					from: userInfo?._id,
 					to: currentChatUser?._id,
 				},
 			});

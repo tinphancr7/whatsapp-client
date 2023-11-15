@@ -4,7 +4,7 @@ export const loginRoute = `${AUTH_ROUTE}/login`;
 export const registerRoute = `${AUTH_ROUTE}/register`;
 export const logoutRoute = `${AUTH_ROUTE}/logout`;
 export const setAvatarRoute = `${AUTH_ROUTE}/setavatar`;
-
+export const GET_CALL_TOKEN = `${AUTH_ROUTE}/generate-token`;
 export const CHECK_USER_ROUTE = `${AUTH_ROUTE}/check-user`;
 export const ONBOARD_USER_ROUTE = `${AUTH_ROUTE}/onboard-user`;
 export const GET_ALL_CONTACTS = `${AUTH_ROUTE}/get-contacts`;

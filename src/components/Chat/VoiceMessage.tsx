@@ -40,7 +40,9 @@ function VoiceMessage({message, currentChatUser}: any) {
 	}, []);
 	useEffect(() => {
 		const audioUrl = `${host}/${message.message}`;
+
 		const audio = new Audio(audioUrl);
+		console.log("audio", audio);
 		setAudioMessage(audio);
 		waveForm.current.load(audioUrl);
 		waveForm.current.on("ready", () => {
@@ -82,8 +84,8 @@ function VoiceMessage({message, currentChatUser}: any) {
 	};
 	return (
 		<div
-			className={`flex items-center gap-5 text-white px-4 pr-2 py-4 text-sm ${
-				message.sender === currentChatUser._id
+			className={`flex items-center gap-5 text-white px-4 pr-2 py-4 text-sm rounded-md ${
+				message?.sender === currentChatUser?._id
 					? "bg-incoming-background"
 					: "bg-outgoing-background"
 			}`}
@@ -92,7 +94,7 @@ function VoiceMessage({message, currentChatUser}: any) {
 				<Image
 					className="object-cover"
 					fill
-					src={currentChatUser?.profilePicture}
+					src={`data:image/svg+xml;base64,${currentChatUser?.avatarImage}`}
 					alt=""
 				/>
 			</div>
@@ -110,9 +112,9 @@ function VoiceMessage({message, currentChatUser}: any) {
 						{formatTime(isPlaying ? currentPlaybackTime : totalDuration)}
 					</span>
 					<div className="flex gap-1">
-						<span>{calculateTime(message?.createAt)}</span>
+						<span>{calculateTime(message?.createdAt)}</span>
 						{message.sender === userInfo._id && (
-							<MessageStatus message={message.MessageStatus} />
+							<MessageStatus message={message.messageStatus} />
 						)}
 					</div>
 				</div>

@@ -40,6 +40,7 @@ function Chat({params}: {params: any}) {
 	useEffect(() => {
 		if (socket?.current && !socketEvent) {
 			socket?.current.on("msg-receive", (data: any) => {
+				console.log("data", data);
 				setMessages((prev: any) => [...prev, data.message]);
 			});
 			socket.current.on(
