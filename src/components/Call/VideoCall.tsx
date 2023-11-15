@@ -1,23 +1,26 @@
 import {useAuthentication} from "@/contexts/app.context";
-import {useEffect} from "react";
 
-function VideoCall({videoCall}: any) {
+import {useEffect} from "react";
+import Container from "./Container";
+
+function VideoCall({videoCall, setVideoCall}: any) {
 	const {userInfo, socket} = useAuthentication();
 	useEffect(() => {
 		if (videoCall.callType === "out-going") {
 			socket.current.emit("outgoing-video-call", {
 				to: videoCall._id,
 				from: {
-					id: userInfo._id,
-					name: userInfo.name,
-					profilePicture: userInfo.profileImage,
+					_id: userInfo._id,
+					username: userInfo.username,
+
+					avatarImage: userInfo.avatarImage,
 				},
 				callType: videoCall.callType,
 				roomId: videoCall.roomId,
 			});
 		}
-	}, []);
-	return <div>VideoCall</div>;
+	}, [socket, userInfo._id, videoCall]);
+	return <Container data={videoCall} setVideoCall={setVideoCall} />;
 }
 
 export default VideoCall;

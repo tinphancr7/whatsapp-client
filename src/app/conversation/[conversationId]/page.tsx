@@ -25,13 +25,12 @@ function Chat({params}: {params: any}) {
 	const [voiceCall, setVoiceCall] = useState<any>(null);
 	const [incomingVideoCall, setIncomingVideoCall] = useState<any>(null);
 	const [videoCall, setVideoCall] = useState<any>(null);
-
+	console.log("incomingVoiceCall", incomingVoiceCall);
 	useEffect(() => {
 		const getOtherUser = async () => {
 			const data = await axios.get(
 				`${GET_USER_ROUTE}/${params.conversationId}`
 			);
-
 			setCurrentChatUser(data.data?.user || {});
 		};
 
@@ -40,7 +39,6 @@ function Chat({params}: {params: any}) {
 	useEffect(() => {
 		if (socket?.current && !socketEvent) {
 			socket?.current.on("msg-receive", (data: any) => {
-				console.log("data", data);
 				setMessages((prev: any) => [...prev, data.message]);
 			});
 			socket.current.on(
@@ -71,11 +69,12 @@ function Chat({params}: {params: any}) {
 				setVideoCall(null);
 				setIncomingVideoCall(null);
 			});
-			// socket.current.on("accept-incoming-call", () => {
-			// 	dispatch({
-			// 		type: reducerCases.END_CALL,
-			// 	});
-			// });
+			socket.current.on("accept-incoming-call", () => {
+				setVideoCall(null);
+				setIncomingVideoCall(null);
+				setVoiceCall(null);
+				setIncomingVoiceCall(null);
+			});
 			setSocketEvent(true);
 		}
 	}, [socket?.current]);
@@ -105,15 +104,15 @@ function Chat({params}: {params: any}) {
 			)}
 			{videoCall && (
 				<div className="h-screen w-screen max-h-full overflow-hidden">
-					<VideoCall videoCall={videoCall} />
+					<VideoCall videoCall={videoCall} setVideoCall={setVideoCall} />
 				</div>
 			)}
 			{voiceCall && (
 				<div className="h-screen w-screen max-h-full overflow-hidden">
-					<VoiceCall voiceCall={voiceCall} />
+					<VoiceCall voiceCall={voiceCall} setVoiceCall={setVoiceCall} />
 				</div>
 			)}
-			{currentChatUser ? (
+			{!voiceCall && !videoCall && currentChatUser ? (
 				<div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
 					<div className="border-conversation-border  border-l w-full bg-conversation-panel-background flex flex-col h-[100vh] z-10">
 						{currentChatUser && (

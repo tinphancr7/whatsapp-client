@@ -4,14 +4,15 @@ import {useAuthentication} from "@/contexts/app.context";
 
 function VoiceCall({voiceCall}: any) {
 	const {userInfo, socket} = useAuthentication();
+	console.log("voiceCall", voiceCall);
 	useEffect(() => {
 		if (voiceCall.callType === "out-going") {
 			socket.current.emit("outgoing-voice-call", {
 				to: voiceCall._id,
 				from: {
-					id: userInfo._id,
-					name: userInfo.name,
-					profilePicture: userInfo.profilePicture,
+					_id: userInfo._id,
+					username: userInfo.username,
+					avatarImage: userInfo.avatarImage,
 				},
 				callType: voiceCall.callType,
 				roomId: voiceCall.roomId,

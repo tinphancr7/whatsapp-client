@@ -1,6 +1,5 @@
 import {useAuthentication} from "@/contexts/app.context";
 import Image from "next/image";
-import React from "react";
 
 function IncomingCall({
 	incomingVoiceCall,

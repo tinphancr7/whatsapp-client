@@ -12,6 +12,7 @@ function Container({data}: any) {
 	const [zgVar, setZgVar] = useState<any>(undefined);
 	const [localStream, setLocalStream] = useState<any>(undefined);
 	const [publishStream, setPublishStream] = useState<any>(undefined);
+	console.log("callAccepted", callAccepted);
 	useEffect(() => {
 		if (data.type === "out-going") {
 			socket.current.on("accept-call", () => {
@@ -42,8 +43,8 @@ function Container({data}: any) {
 		const startCall = async () => {
 			import("zego-express-engine-webrtc").then(async ({ZegoExpressEngine}) => {
 				const zg = new ZegoExpressEngine(
-					process.env.NEXT_PUBLIC_ZEGO_APP_ID,
-					process.env.NEXT_PUBLIC_ZEGO_SERVER
+					Number(process.env.NEXT_PUBLIC_ZEGO_APP_ID),
+					process.env.NEXT_PUBLIC_ZEGO_SERVER as string
 				);
 				setZgVar(zg);
 				zg.on(
@@ -124,7 +125,7 @@ function Container({data}: any) {
 			socket.current.emit("reject-voice-call", {
 				from: id,
 			});
-			if(zgVar && localStream && publishStream){
+			if (zgVar && localStream && publishStream) {
 				zgVar.destroyStream(localStream);
 				zgVar.stopPublishingStream(publishStream);
 				zgVar.logoutRoom(data.roomId.toString());
@@ -141,17 +142,18 @@ function Container({data}: any) {
 	return (
 		<div className="border-conversation-border border-l w-full bg-conversation-panel-background flex flex-col h-[100vh]  overflow-hidden items-center justify-center text-white">
 			<div className="flex flex-col gap-3 items-center">
-				<span className="text-5xl">{data.name}</span>
+				<span className="text-5xl">{data.username}</span>
 				<span className="text-lg">
 					{callAccepted && data.callType !== "video"
 						? "On going call"
 						: "Calling"}
 				</span>
 			</div>
-			{!callAccepted && data.callType === "audio" && (
+
+			{(!callAccepted || data.callType === "audio") && (
 				<div className="my-24">
 					<Image
-						src={data.profilePicture}
+						src={`data:image/svg+xml;base64,${data?.avatarImage}`}
 						alt="avatar"
 						height={300}
 						width={300}
