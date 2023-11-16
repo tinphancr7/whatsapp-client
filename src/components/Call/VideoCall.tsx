@@ -6,13 +6,12 @@ import Container from "./Container";
 function VideoCall({videoCall, setVideoCall}: any) {
 	const {userInfo, socket} = useAuthentication();
 	useEffect(() => {
-		if (videoCall.callType === "out-going") {
+		if (videoCall.type === "out-going") {
 			socket.current.emit("outgoing-video-call", {
 				to: videoCall._id,
 				from: {
 					_id: userInfo._id,
 					username: userInfo.username,
-
 					avatarImage: userInfo.avatarImage,
 				},
 				callType: videoCall.callType,

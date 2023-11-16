@@ -92,11 +92,19 @@ function Chat({params}: {params: any}) {
 			getMessages();
 		}
 	}, [currentChatUser?._id, userInfo?._id]);
+
 	return (
 		<SocketWrapper>
-			{incomingVoiceCall && <IncomingCall />}
+			{incomingVoiceCall && (
+				<IncomingCall
+					setVoiceCall={setVoiceCall}
+					incomingVoiceCall={incomingVoiceCall}
+					setIncomingVoiceCall={setIncomingVoiceCall}
+				/>
+			)}
 			{incomingVideoCall && (
 				<IncomingVideoCall
+					videoCall={videoCall}
 					setVideoCall={setVideoCall}
 					incomingVideoCall={incomingVideoCall}
 					setIncomingVideoCall={setIncomingVideoCall}
