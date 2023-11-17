@@ -15,24 +15,23 @@ function ImageMessage({message, currentChatUser}: any) {
 					: "bg-outgoing-background"
 			}`}
 		>
-			<div className="relative">
+			<div className="relative w-[300px] h-[200px]">
 				<Image
 					src={`${host}/${message.message}`}
-					className="rounded-lg"
+					className="rounded-lg object-container"
 					alt="asset"
-					height={300}
-					width={300}
+					fill
 				/>
-				<div className="absolute bottom-1 right-1 flex items-end gap-1">
-					<span className="text-bubble-meta text-xs pt-1 min-w-fit">
-						{calculateTime(message?.createdAt)}
-					</span>
-					<span>
-						{message?.sender === userInfo?._id && (
-							<MessageStatus status={message.MessageStatus} />
-						)}
-					</span>
-				</div>
+			</div>
+			<div className=" flex items-center jus gap-1">
+				<span className="text-bubble-meta text-xs pt-1 min-w-fit">
+					{calculateTime(message?.createdAt)}
+				</span>
+				<span className="text-bubble-meta">
+					{message?.sender === userInfo?._id && (
+						<MessageStatus messageStatus={message.messageStatus} />
+					)}
+				</span>
 			</div>
 		</div>
 	);

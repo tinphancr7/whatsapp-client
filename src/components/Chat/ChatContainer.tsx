@@ -4,13 +4,17 @@ import ImageMessage from "./ImageMessage";
 import VoiceMessage from "./VoiceMessage";
 import MessageStatus from "../common/MessageStatus";
 import {useAuthentication} from "@/contexts/app.context";
+import {useEffect, useRef} from "react";
 interface ChatContainerProps {
 	messages: any;
 	currentChatUser: any;
 }
 function ChatContainer({messages, currentChatUser}: ChatContainerProps) {
 	const {userInfo} = useAuthentication();
-
+	const scrollRef = useRef();
+	useEffect(() => {
+		scrollRef.current?.scrollIntoView({behavior: "smooth"});
+	}, [messages.length]);
 	return (
 		<div className="h-[80vh] w-ful  relative flex-grow overflow-auto custom-scrollbar">
 			<div className="bg-chat-background bg-fixed h-full w-full opacity-5 fixed left-0 top-0 z-0"></div>
@@ -19,6 +23,7 @@ function ChatContainer({messages, currentChatUser}: ChatContainerProps) {
 					<div className="flex flex-col justify-end w-full gap-1 overflow-auto">
 						{messages?.map((message: any, index: number) => (
 							<div
+								ref={scrollRef}
 								key={index}
 								className={`flex ${
 									message?.sender === currentChatUser?._id

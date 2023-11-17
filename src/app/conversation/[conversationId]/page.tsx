@@ -39,6 +39,7 @@ function Chat({params}: {params: any}) {
 	useEffect(() => {
 		if (socket?.current && !socketEvent) {
 			socket?.current.on("msg-receive", (data: any) => {
+				console.log("msg-receive", data);
 				setMessages((prev: any) => [...prev, data.message]);
 			});
 			socket.current.on(
@@ -77,7 +78,7 @@ function Chat({params}: {params: any}) {
 			});
 			setSocketEvent(true);
 		}
-	}, [socket?.current]);
+	}, [socket?.current, socketEvent]);
 	useEffect(() => {
 		const getMessages = async () => {
 			const {

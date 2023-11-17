@@ -18,36 +18,38 @@ function VoiceMessage({message, currentChatUser}: any) {
 	const waveForm = useRef<any>(null);
 
 	useEffect(() => {
-		if (waveForm.current === null) {
-			waveForm.current = WaveSurfer.create({
-				container: waveFormRef.current,
-				waveColor: "#ccc",
-				progressColor: "#4a9eff",
-				cursorColor: "#7ae3c3",
-				barWidth: 2,
-				barRadius: 3,
-				height: 30,
-				barGap: 3,
-			});
+		waveForm.current = WaveSurfer.create({
+			container: waveFormRef.current,
+			waveColor: "violet",
+			progressColor: "purple",
+			cursorColor: "#7ae3c3",
+			barWidth: 2,
+			barRadius: 3,
+			height: 30,
+			barGap: 3,
+		});
 
-			waveForm.current.on("finish", () => {
-				setIsPlaying(false);
-			});
-		}
+		waveForm.current.on("finish", () => {
+			setIsPlaying(false);
+		});
 		return () => {
 			waveForm.current.destroy();
 		};
 	}, []);
 	useEffect(() => {
-		const audioUrl = `${host}/${message.message}`;
+		try {
+			const audioUrl = `${host}/${message.message}`;
 
-		const audio = new Audio(audioUrl);
-		console.log("audio", audio);
-		setAudioMessage(audio);
-		waveForm.current.load(audioUrl);
-		waveForm.current.on("ready", () => {
-			setTotalDuration(waveForm.current.getDuration());
-		});
+			const audio = new Audio(audioUrl);
+
+			setAudioMessage(audio);
+			waveForm.current && waveForm.current.load(audioUrl);
+			waveForm.current.on("ready", () => {
+				setTotalDuration(waveForm.current.getDuration());
+			});
+		} catch (error) {
+			console.log("error", error);
+		}
 	}, [message.message]);
 
 	useEffect(() => {
@@ -105,16 +107,17 @@ function VoiceMessage({message, currentChatUser}: any) {
 					<FaStop onClick={handlePauseAudio} />
 				)}
 			</div>
+
 			<div className="relative">
-				<div className="w-60" ref={waveFormRef} />
-				<div className="text-bubble-meta pt-1 text-xs flex items-center justify-between absolute w-full bottom-[22px]">
+				<div className="w-60 " ref={waveFormRef} />
+				<div className="text-bubble-meta pt-1 text-xs flex items-center justify-between absolute w-full bottom-[-22px]">
 					<span>
 						{formatTime(isPlaying ? currentPlaybackTime : totalDuration)}
 					</span>
 					<div className="flex gap-1">
 						<span>{calculateTime(message?.createdAt)}</span>
 						{message.sender === userInfo._id && (
-							<MessageStatus message={message.messageStatus} />
+							<MessageStatus messageStatus={message.messageStatus} />
 						)}
 					</div>
 				</div>
