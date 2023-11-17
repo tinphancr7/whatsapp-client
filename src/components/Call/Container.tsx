@@ -12,7 +12,7 @@ function Container({data}: any) {
 	const [zgVar, setZgVar] = useState<any>(undefined);
 	const [localStream, setLocalStream] = useState<any>(undefined);
 	const [publishStream, setPublishStream] = useState<any>(undefined);
-	console.log("callAccepted", callAccepted);
+
 	useEffect(() => {
 		if (data.type === "out-going") {
 			socket.current.on("accept-call", () => {

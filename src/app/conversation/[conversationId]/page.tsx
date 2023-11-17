@@ -25,7 +25,7 @@ function Chat({params}: {params: any}) {
 	const [voiceCall, setVoiceCall] = useState<any>(null);
 	const [incomingVideoCall, setIncomingVideoCall] = useState<any>(null);
 	const [videoCall, setVideoCall] = useState<any>(null);
-	console.log("incomingVoiceCall", incomingVoiceCall);
+
 	useEffect(() => {
 		const getOtherUser = async () => {
 			const data = await axios.get(
@@ -54,6 +54,7 @@ function Chat({params}: {params: any}) {
 			socket.current.on(
 				"incoming-voice-call",
 				({from, roomId, callType}: any) => {
+					console.log("from", from, roomId, callType);
 					setIncomingVoiceCall({
 						...from,
 						roomId,
@@ -94,7 +95,13 @@ function Chat({params}: {params: any}) {
 	}, [currentChatUser?._id, userInfo?._id]);
 	return (
 		<SocketWrapper>
-			{incomingVoiceCall && <IncomingCall />}
+			{incomingVoiceCall && (
+				<IncomingCall
+					incomingVoiceCall={incomingVoiceCall}
+					setIncomingVoiceCall={setIncomingVoiceCall}
+					setVoiceCall={setVoiceCall}
+				/>
+			)}
 			{incomingVideoCall && (
 				<IncomingVideoCall
 					setVideoCall={setVideoCall}
