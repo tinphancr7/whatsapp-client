@@ -53,7 +53,7 @@ function SearchMessages({
 					</div>
 					<span className="mt-1 text-secondary">
 						{!searchTerm.length &&
-							`Search your messages with ${currentChatUser?.name}`}
+							`Search your messages with ${currentChatUser?.username}`}
 					</span>
 				</div>
 				<div className="flex justify-center h-full flex-col">
