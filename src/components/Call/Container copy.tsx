@@ -10,7 +10,7 @@ function Container({data}: any) {
 	const [callAccepted, setCallAccepted] = useState(false);
 	const [token, setToken] = useState(undefined);
 	const [zgVar, setZgVar] = useState<any>(undefined);
-	const [localStreams, setLocalStream] = useState<any>(undefined);
+	const [localStream, setLocalStream] = useState<any>(undefined);
 	const [publishStream, setPublishStream] = useState<any>(undefined);
 
 	useEffect(() => {
@@ -52,7 +52,9 @@ function Container({data}: any) {
 					async (roomID: any, updateType, streamList, extendedData) => {
 						if (updateType === "ADD") {
 							const rmVideo = document.getElementById("remote-video");
-							const vd = document.createElement("video");
+							const vd = document.createElement(
+								data.callType === "video" ? "video" : "audio"
+							);
 							vd.id = streamList[0].streamID;
 							vd.autoplay = true;
 							vd.playsInline = true;
@@ -63,16 +65,14 @@ function Container({data}: any) {
 							zg.startPlayingStream(streamList[0].streamID, {
 								audio: true,
 								video: true,
-							}).then((stream) => {
-								vd.srcObject = stream;
-							});
+							}).then((stream) => (vd.srcObject = stream));
 						} else if (
 							updateType === "DELETE" &&
 							zg &&
-							localStreams &&
+							localStream &&
 							streamList[0].streamID
 						) {
-							zg.destroyStream(localStreams);
+							zg.destroyStream(localStream);
 							zg.stopPublishingStream(streamList[0]?.streamID);
 							zg.logoutRoom(data.roomId.toString());
 							// dispatchEvent({ typetype:reducerCases.END_CALL });
@@ -94,11 +94,13 @@ function Container({data}: any) {
 				const localStream = await zg.createStream({
 					camera: {
 						audio: true,
-						video: true,
+						video: data.callType === "video" ? true : false,
 					},
 				});
 				const localVideo = document.getElementById("local-video");
-				const videoElement = document.createElement("video");
+				const videoElement = document.createElement(
+					data.callType === "video" ? "video" : "audio"
+				);
 				videoElement.id = "video-local-zego";
 				videoElement.className = "h-28 w-32";
 				videoElement.autoplay = true;

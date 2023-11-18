@@ -18,6 +18,7 @@ function IncomingCall({
 		setIncomingVoiceCall(null);
 	};
 	const rejectCall = () => {
+		console.log("reject");
 		socket.current.emit("reject-voice-call", {
 			from: incomingVoiceCall?._id,
 		});

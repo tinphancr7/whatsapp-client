@@ -4,7 +4,7 @@ import {useAuthentication} from "@/contexts/app.context";
 
 function VoiceCall({voiceCall}: any) {
 	const {userInfo, socket} = useAuthentication();
-	console.log("voiceCall", voiceCall);
+
 	useEffect(() => {
 		if (voiceCall.type === "out-going") {
 			socket.current.emit("outgoing-voice-call", {
@@ -18,7 +18,7 @@ function VoiceCall({voiceCall}: any) {
 				roomId: voiceCall.roomId,
 			});
 		}
-	}, [voiceCall, socket]);
+	}, [voiceCall]);
 	return <Container data={voiceCall} />;
 }
 

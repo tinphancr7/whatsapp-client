@@ -14,7 +14,7 @@ import WaveSurfer from "wavesurfer.js";
 
 function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 	const {userInfo, socket} = useAuthentication();
-	console.log("userInfo", userInfo);
+
 	const [isRecording, setIsRecording] = useState(false);
 	const [recordedAudio, setRecordedAudio] = useState<any>(null);
 	const [waveForm, setWaveForm] = useState<any>(null);
@@ -68,7 +68,6 @@ function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 
 	useEffect(() => {
 		if (recordedAudio) {
-			console.log("recordedAudio", recordedAudio);
 			const updatePlaybackTime = () => {
 				setCurrentPlaybackTime(recordedAudio.currentTime);
 			};
@@ -108,7 +107,6 @@ function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 					const blob = new Blob(chunks, {type: "audio/ogg; codecs=opus"});
 					const audioURL = window.URL.createObjectURL(blob);
 					const audio = new Audio(audioURL);
-					console.log("audio", audio);
 					setRecordedAudio(audio);
 					waveForm.load(audioURL);
 				};
@@ -135,6 +133,7 @@ function CaptureAudio({hide, currentChatUser, setMessage, setMessages}: any) {
 				const audioBlob = new Blob(audioChunks, {
 					type: "audio/mp3",
 				});
+				console.log("waveForm.current", waveForm.current);
 				const audioFile = new File([audioBlob], "recording.mp3");
 				setRenderedAudio(audioFile);
 			});
