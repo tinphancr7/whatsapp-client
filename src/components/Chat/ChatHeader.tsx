@@ -3,12 +3,10 @@ import {MdCall} from "react-icons/md";
 import {BsThreeDotsVertical} from "react-icons/bs";
 import {IoVideocam} from "react-icons/io5";
 import {BiSearchAlt2} from "react-icons/bi";
-
 import Image from "next/image";
-import {isContext} from "vm";
-import ContextMenu from "../common/ContextMenu";
 
 function ChatHeader({
+	onlineUsers,
 	currentChatUser,
 	setVoiceCall,
 	setVideoCall,
@@ -40,6 +38,13 @@ function ChatHeader({
 						alt="avatar"
 						className="object-cover rounded-full "
 					/>
+					<span
+						className={`rounded-full p-1 inline-block absolute top-0 right-2 ${
+							onlineUsers.includes(currentChatUser?._id)
+								? "bg-green-500 "
+								: "bg-red-500"
+						}`}
+					></span>
 				</div>
 				<div className="flex flex-col">
 					<span className="text-primary-strong">

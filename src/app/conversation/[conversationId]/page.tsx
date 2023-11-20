@@ -11,12 +11,19 @@ import IncomingCall from "@/components/common/IncomingCall";
 import IncomingVideoCall from "@/components/common/IncomingVideoCall";
 import {useAuthentication} from "@/contexts/app.context";
 import {GET_MESSAGES_ROUTE, GET_USER_ROUTE} from "@/utils/APIRoutes";
+import {unReadNotificationsFunc} from "@/utils/unReadNotifications";
 import axios from "axios";
 import {useState, useEffect} from "react";
 
 function Chat({params}: {params: any}) {
-	const {userInfo, socket, currentChatUser, setCurrentChatUser} =
-		useAuthentication();
+	const {
+		userInfo,
+		socket,
+		onlineUsers,
+		currentChatUser,
+		setCurrentChatUser,
+		setNotifications,
+	} = useAuthentication();
 	const [messages, setMessages] = useState<any>([]);
 
 	const [socketEvent, setSocketEvent] = useState(false);
@@ -39,8 +46,23 @@ function Chat({params}: {params: any}) {
 	useEffect(() => {
 		if (socket?.current && !socketEvent) {
 			socket?.current.on("msg-receive", (data: any) => {
-				console.log("msg-receive", data);
+				console.log("data", data);
 				setMessages((prev: any) => [...prev, data.message]);
+			});
+			socket?.current.on("get-notification", (data: any) => {
+				console.log("data1", data);
+				const isChatOpen = currentChatUser?._id === data.from._id;
+				if (isChatOpen) {
+					setNotifications((prev: any) => [
+						...prev,
+						{
+							...data,
+							isRead: true,
+						},
+					]);
+				} else {
+					setNotifications((prev: any) => [...prev, data]);
+				}
 			});
 			socket.current.on(
 				"incoming-video-call",
@@ -127,6 +149,7 @@ function Chat({params}: {params: any}) {
 						{currentChatUser && (
 							<>
 								<ChatHeader
+									onlineUsers={onlineUsers}
 									currentChatUser={currentChatUser}
 									setVoiceCall={setVoiceCall}
 									setVideoCall={setVideoCall}
