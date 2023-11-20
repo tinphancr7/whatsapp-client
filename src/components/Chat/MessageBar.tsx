@@ -8,9 +8,11 @@ import {MdSend} from "react-icons/md";
 import PhotoPicker from "../common/PhotoPicker";
 import CaptureAudio from "../common/CaptureAudio";
 import {ADD_IMAGE_MESSAGE_ROUTE, ADD_MESSAGE_ROUTE} from "@/utils/APIRoutes";
+import {useAuthentication} from "@/contexts/app.context";
 
-function MessageBar({setMessages, currentChatUser, userInfo, socket}: any) {
-	const emojiPickerRef = useRef(null);
+function MessageBar() {
+	const {setMessages, currentChatUser, userInfo, socket} = useAuthentication();
+	const emojiPickerRef = useRef<any>(null);
 	const [grabPhoto, setGrabPhoto] = useState(false);
 	const [showAudioRecorder, setShowAudioRecorder] = useState(false);
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);

@@ -3,8 +3,7 @@ import {useAuthentication} from "@/contexts/app.context";
 import {useEffect} from "react";
 import Container from "./Container";
 
-function VideoCall({videoCall, setVideoCall}: any) {
-	const {userInfo, socket} = useAuthentication();
+function VideoCall({videoCall, setVideoCall, userInfo, socket}: any) {
 	useEffect(() => {
 		if (videoCall.type === "out-going") {
 			socket.current.emit("outgoing-video-call", {

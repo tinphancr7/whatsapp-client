@@ -1,8 +1,6 @@
 import React from "react";
-import Avatar from "../common/Avatar";
 import {useAuthentication} from "@/contexts/app.context";
 import Image from "next/image";
-import Link from "next/link";
 import {calculateTime} from "@/utils/CalculateTime";
 import MessageStatus from "../common/MessageStatus";
 import {FaCamera, FaMicrophone} from "react-icons/fa";
@@ -10,14 +8,25 @@ import {unReadNotificationsFunc} from "@/utils/unReadNotifications";
 
 function ChatListItem({data, userInfo}: any) {
 	const {notifications, pageType, onlineUsers} = useAuthentication();
-	console.log("notifications", notifications);
+
 	const unreadNotifications = unReadNotificationsFunc(notifications);
 	const totalUnreadNotifications = unreadNotifications.filter(
 		(notification: any) => notification.sender === data?._id
 	).length;
+	const handleContactClick = () => {
+		// if (currentChatUser?.id === data?.id) {
+		// dispatch({
+		// 	type: reducerCases.CHANGE_CURRENT_CHAT_USER,
+		// 	user: {...data},
+		// });
+		// dispatch({
+		// 	type: reducerCases.SET_ALL_CONTACTS_PAGE,
+		// });
+		// }
+	};
 	return (
-		<Link
-			href={`/conversation/${data?._id}`}
+		<div
+			onClick={handleContactClick}
 			className={`flex cursor-pointer items-center hover:bg-background-default-hover`}
 		>
 			<div className="min-w-fit px-5 pt-3 pb-1">
@@ -89,7 +98,7 @@ function ChatListItem({data, userInfo}: any) {
 					</div>
 				</div>
 			</div>
-		</Link>
+		</div>
 	);
 }
 

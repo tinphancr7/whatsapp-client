@@ -5,13 +5,10 @@ import VoiceMessage from "./VoiceMessage";
 import MessageStatus from "../common/MessageStatus";
 import {useAuthentication} from "@/contexts/app.context";
 import {useEffect, useRef} from "react";
-interface ChatContainerProps {
-	messages: any;
-	currentChatUser: any;
-}
-function ChatContainer({messages, currentChatUser}: ChatContainerProps) {
-	const {userInfo} = useAuthentication();
-	const scrollRef = useRef();
+
+function ChatContainer() {
+	const {userInfo, messages, currentChatUser} = useAuthentication();
+	const scrollRef = useRef<any>();
 	useEffect(() => {
 		scrollRef.current?.scrollIntoView({behavior: "smooth"});
 	}, [messages.length]);

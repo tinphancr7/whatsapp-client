@@ -4,16 +4,28 @@ import {getProfileFromLS} from "../utils/auth";
 interface AuthenticationContextInterface {
 	userInfo: any;
 	setUserInfo: (value: any) => void;
-	pageType?: string;
-	setPageType?: (value: string) => void;
-	onlineUsers?: any;
+	pageType: string;
+	setPageType: (value: string) => void;
+	onlineUsers: any;
 	setOnlineUsers: (value: any) => void;
-	currentChatUser?: any;
-	setCurrentChatUser?: (value: any) => void;
+	currentChatUser: any;
+	setCurrentChatUser: (value: any) => void;
 	socket: any;
 	setSocket: (value: any) => void;
-	notifications?: any;
-	setNotifications?: (value: any) => void;
+	notifications: any;
+	setNotifications: (value: any) => void;
+	messages: any;
+	setMessages: (value: any) => void;
+	messageSearch: boolean;
+	setMessageSearch: (value: boolean) => void;
+	incomingVoiceCall: any;
+	setIncomingVoiceCall: (value: any) => void;
+	voiceCall: any;
+	setVoiceCall: (value: any) => void;
+	incomingVideoCall: any;
+	setIncomingVideoCall: (value: any) => void;
+	videoCall: any;
+	setVideoCall: (value: any) => void;
 }
 const initialAuthenticationContext: AuthenticationContextInterface = {
 	userInfo: getProfileFromLS(),
@@ -28,6 +40,18 @@ const initialAuthenticationContext: AuthenticationContextInterface = {
 	setOnlineUsers: () => null,
 	notifications: [],
 	setNotifications: () => null,
+	messages: [],
+	setMessages: () => null,
+	messageSearch: false,
+	setMessageSearch: () => null,
+	incomingVoiceCall: null,
+	setIncomingVoiceCall: () => null,
+	voiceCall: null,
+	setVoiceCall: () => null,
+	incomingVideoCall: null,
+	setIncomingVideoCall: () => null,
+	videoCall: null,
+	setVideoCall: () => null,
 };
 
 const AuthenticationContext = createContext<AuthenticationContextInterface>(
@@ -41,9 +65,15 @@ const AuthenticationProvider = ({children}: {children: React.ReactNode}) => {
 		initialAuthenticationContext.pageType
 	);
 	const [socket, setSocket] = useState(null);
-	const [currentChatUser, setCurrentChatUser] = useState<any>({});
+	const [currentChatUser, setCurrentChatUser] = useState<any>(null);
 	const [onlineUsers, setOnlineUsers] = useState([]);
 	const [notifications, setNotifications] = useState<any>([]);
+	const [messages, setMessages] = useState<any>([]);
+	const [messageSearch, setMessageSearch] = useState(false);
+	const [incomingVoiceCall, setIncomingVoiceCall] = useState<any>(null);
+	const [voiceCall, setVoiceCall] = useState<any>(null);
+	const [incomingVideoCall, setIncomingVideoCall] = useState<any>(null);
+	const [videoCall, setVideoCall] = useState<any>(null);
 	return (
 		<AuthenticationContext.Provider
 			value={{
@@ -59,6 +89,18 @@ const AuthenticationProvider = ({children}: {children: React.ReactNode}) => {
 				setOnlineUsers,
 				notifications,
 				setNotifications,
+				messages,
+				setMessages,
+				messageSearch,
+				setMessageSearch,
+				incomingVoiceCall,
+				setIncomingVoiceCall,
+				voiceCall,
+				setVoiceCall,
+				incomingVideoCall,
+				setIncomingVideoCall,
+				videoCall,
+				setVideoCall,
 			}}
 		>
 			{children}

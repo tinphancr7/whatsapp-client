@@ -4,14 +4,16 @@ import {BsThreeDotsVertical} from "react-icons/bs";
 import {IoVideocam} from "react-icons/io5";
 import {BiSearchAlt2} from "react-icons/bi";
 import Image from "next/image";
+import {useAuthentication} from "@/contexts/app.context";
 
-function ChatHeader({
-	onlineUsers,
-	currentChatUser,
-	setVoiceCall,
-	setVideoCall,
-	setMessageSearch,
-}: any) {
+function ChatHeader() {
+	const {
+		onlineUsers,
+		currentChatUser,
+		setVoiceCall,
+		setVideoCall,
+		setMessageSearch,
+	} = useAuthentication();
 	const handleVoiceCall = () => {
 		setVoiceCall({
 			...currentChatUser,
