@@ -14,6 +14,7 @@ function ContactsList({setPageType}: any) {
 			const {
 				data: {users},
 			} = await axios.get(`${GET_ALL_CONTACTS}/${userInfo._id}`);
+
 			setAllContacts({...users});
 		};
 		getContacts();

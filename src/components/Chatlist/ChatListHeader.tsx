@@ -4,7 +4,7 @@ import {useAuthentication} from "@/contexts/app.context";
 import Image from "next/image";
 
 function ChatListHeader({setPageType}: any) {
-	const {userInfo} = useAuthentication();
+	const {userInfo, onlineUsers} = useAuthentication();
 
 	const handleAllContactsPage = () => {
 		setPageType("all-contacts");
@@ -18,6 +18,11 @@ function ChatListHeader({setPageType}: any) {
 					alt="avatar"
 					className="object-cover rounded-full "
 				/>
+				<span
+					className={`rounded-full p-1 inline-block absolute top-0 right-2 ${
+						onlineUsers.includes(userInfo?._id) ? "bg-green-500 " : "bg-red-500"
+					}`}
+				></span>
 			</div>
 			<div className="flex gap-6">
 				<BsFillChatLeftTextFill
