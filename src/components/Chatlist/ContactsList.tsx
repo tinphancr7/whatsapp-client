@@ -8,12 +8,12 @@ import {GET_ALL_CONTACTS} from "@/utils/APIRoutes";
 function ContactsList({setPageType}: any) {
 	const {userInfo} = useAuthentication();
 	const [allContacts, setAllContacts] = useState({});
-
+	console.log("allContacts", allContacts);
 	useEffect(() => {
 		const getContacts = async () => {
 			const {
 				data: {users},
-			} = await axios.get(`${GET_ALL_CONTACTS}/${userInfo._id}`);
+			} = await axios.get(`${GET_ALL_CONTACTS}/${userInfo?._id}`);
 
 			setAllContacts({...users});
 		};

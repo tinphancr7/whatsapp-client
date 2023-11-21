@@ -5,7 +5,7 @@ import React, {Fragment, useEffect, useState} from "react";
 import ChatListItem from "./ChatListItem";
 
 function List() {
-	const {userInfo, setCurrentChatUser, notifications} = useAuthentication();
+	const {userInfo} = useAuthentication();
 	const [userContacts, setUserContacts] = useState([]);
 
 	useEffect(() => {
@@ -28,12 +28,7 @@ function List() {
 			{userContacts.length > 0 &&
 				userContacts?.map((contact, index) => (
 					<Fragment key={index}>
-						<ChatListItem
-							notifications={notifications}
-							data={contact}
-							setCurrentChatUser={setCurrentChatUser}
-							userInfo={userInfo}
-						/>
+						<ChatListItem data={contact} />
 					</Fragment>
 				))}
 		</div>

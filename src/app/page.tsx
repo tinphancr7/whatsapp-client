@@ -25,6 +25,8 @@ function Main() {
 		setSocket,
 		setMessages,
 		messages,
+
+		setNotiMessages,
 		messageSearch,
 		setMessageSearch,
 		incomingVoiceCall,
@@ -47,6 +49,9 @@ function Main() {
 			});
 			setSocket(socket);
 		}
+		return () => {
+			socket.current?.disconnect();
+		};
 	}, [userInfo?._id]);
 	useEffect(() => {
 		if (!userInfo) {
@@ -65,8 +70,11 @@ function Main() {
 			socket?.current.on("msg-receive", (data: any) => {
 				setMessages((prev: any) => [...prev, data.message]);
 			});
+			socket?.current.on("msg-noti", (data: any) => {
+				setNotiMessages((prev: any) => [data.message, ...prev]);
+			});
 			socket?.current.on("get-notification", (data: any) => {
-				const isChatOpen = currentChatUser?._id === data.from._id;
+				const isChatOpen = currentChatUser?._id === data?.sender;
 				if (isChatOpen) {
 					setNotifications((prev: any) => [
 						...prev,
@@ -92,7 +100,6 @@ function Main() {
 			socket.current.on(
 				"incoming-voice-call",
 				({from, roomId, callType}: any) => {
-					console.log("from", from, roomId, callType);
 					setIncomingVoiceCall({
 						...from,
 						roomId,

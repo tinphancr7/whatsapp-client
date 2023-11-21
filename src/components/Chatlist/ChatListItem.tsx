@@ -6,23 +6,41 @@ import MessageStatus from "../common/MessageStatus";
 import {FaCamera, FaMicrophone} from "react-icons/fa";
 import {unReadNotificationsFunc} from "@/utils/unReadNotifications";
 
-function ChatListItem({data, userInfo}: any) {
-	const {notifications, pageType, onlineUsers} = useAuthentication();
+function ChatListItem({data}: any) {
+	const {
+		userInfo,
+		notifications,
+		pageType,
+		onlineUsers,
+		setCurrentChatUser,
+		notiMessages,
+	} = useAuthentication();
+	console.log("data?.sender?._id", data?.sender?._id);
 
 	const unreadNotifications = unReadNotificationsFunc(notifications);
 	const totalUnreadNotifications = unreadNotifications.filter(
 		(notification: any) => notification.sender === data?._id
 	).length;
+	const notiMessage = notiMessages.find(
+		(item: any) =>
+			item.sender === data?._id ||
+			(item.sender === userInfo?._id && item.receiver === data?._id)
+	);
+
 	const handleContactClick = () => {
-		// if (currentChatUser?.id === data?.id) {
-		// dispatch({
-		// 	type: reducerCases.CHANGE_CURRENT_CHAT_USER,
-		// 	user: {...data},
-		// });
-		// dispatch({
-		// 	type: reducerCases.SET_ALL_CONTACTS_PAGE,
-		// });
-		// }
+		if (pageType === "default") {
+			setCurrentChatUser({
+				...data,
+				_id:
+					userInfo?._id === data?.sender?._id
+						? data?.receiver?._id
+						: data?.sender?._id,
+			});
+		} else {
+			setCurrentChatUser({
+				...data,
+			});
+		}
 	};
 	return (
 		<div
@@ -73,8 +91,11 @@ function ChatListItem({data, userInfo}: any) {
 									{data?.sender?._id === userInfo?._id && (
 										<MessageStatus messageStatus={data?.messageStatus} />
 									)}
+									{data?.sender?._id === userInfo?._id && <span>Bạn:</span>}
 									{data.type === "text" && (
-										<span className="truncate">{data.message}</span>
+										<span className="truncate">
+											{notiMessage?.message || data.message}
+										</span>
 									)}
 									{data.type === "audio" && (
 										<span className="flex gap-1 items-center">

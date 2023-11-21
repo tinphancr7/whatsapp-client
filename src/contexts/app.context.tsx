@@ -26,6 +26,8 @@ interface AuthenticationContextInterface {
 	setIncomingVideoCall: (value: any) => void;
 	videoCall: any;
 	setVideoCall: (value: any) => void;
+	notiMessages: any;
+	setNotiMessages: (value: any) => void;
 }
 const initialAuthenticationContext: AuthenticationContextInterface = {
 	userInfo: getProfileFromLS(),
@@ -52,6 +54,8 @@ const initialAuthenticationContext: AuthenticationContextInterface = {
 	setIncomingVideoCall: () => null,
 	videoCall: null,
 	setVideoCall: () => null,
+	notiMessages: [],
+	setNotiMessages: () => null,
 };
 
 const AuthenticationContext = createContext<AuthenticationContextInterface>(
@@ -69,6 +73,7 @@ const AuthenticationProvider = ({children}: {children: React.ReactNode}) => {
 	const [onlineUsers, setOnlineUsers] = useState([]);
 	const [notifications, setNotifications] = useState<any>([]);
 	const [messages, setMessages] = useState<any>([]);
+	const [notiMessages, setNotiMessages] = useState<any>([]);
 	const [messageSearch, setMessageSearch] = useState(false);
 	const [incomingVoiceCall, setIncomingVoiceCall] = useState<any>(null);
 	const [voiceCall, setVoiceCall] = useState<any>(null);
@@ -101,6 +106,8 @@ const AuthenticationProvider = ({children}: {children: React.ReactNode}) => {
 				setIncomingVideoCall,
 				videoCall,
 				setVideoCall,
+				notiMessages,
+				setNotiMessages,
 			}}
 		>
 			{children}
