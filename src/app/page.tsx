@@ -18,14 +18,11 @@ function Main() {
 	const router = useRouter();
 	const {
 		userInfo,
-		onlineUsers,
 		currentChatUser,
-		setNotifications,
 		setOnlineUsers,
 		setSocket,
 		setMessages,
 		messages,
-
 		setNotiMessages,
 		messageSearch,
 		setMessageSearch,
@@ -66,27 +63,26 @@ function Main() {
 	const [socketEvent, setSocketEvent] = useState(false);
 
 	useEffect(() => {
+		socket?.current.on("msg-receive", (data: any) => {
+			console.log("msg-receive1", currentChatUser);
+			setMessages((prev: any) => [...prev, data.message]);
+		});
+		return () => {
+			socket?.current.off("msg-receive");
+		};
+	}, [currentChatUser?._id]);
+	useEffect(() => {
 		if (socket?.current && !socketEvent) {
 			socket?.current.on("msg-receive", (data: any) => {
 				setMessages((prev: any) => [...prev, data.message]);
 			});
 			socket?.current.on("msg-noti", (data: any) => {
-				setNotiMessages((prev: any) => [data.message, ...prev]);
-			});
-			socket?.current.on("get-notification", (data: any) => {
-				const isChatOpen = currentChatUser?._id === data?.sender;
-				if (isChatOpen) {
-					setNotifications((prev: any) => [
-						...prev,
-						{
-							...data,
-							isRead: true,
-						},
-					]);
-				} else {
-					setNotifications((prev: any) => [...prev, data]);
+				console.log("msg-noti", currentChatUser);
+				if (currentChatUser?._id !== data?.from) {
+					setNotiMessages((prev: any) => [data.message, ...prev]);
 				}
 			});
+
 			socket.current.on(
 				"incoming-video-call",
 				({from, roomId, callType}: any) => {

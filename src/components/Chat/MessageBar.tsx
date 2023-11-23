@@ -91,6 +91,7 @@ function MessageBar() {
 				from: userInfo?._id,
 				message,
 			});
+			console.log("data", data);
 
 			socket.current.emit("send-msg", {
 				to: currentChatUser?._id,

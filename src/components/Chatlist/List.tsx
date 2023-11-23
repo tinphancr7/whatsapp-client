@@ -5,8 +5,53 @@ import React, {Fragment, useEffect, useState} from "react";
 import ChatListItem from "./ChatListItem";
 
 function List() {
-	const {userInfo} = useAuthentication();
+	const {userInfo, notiMessages, currentChatUser} = useAuthentication();
 	const [userContacts, setUserContacts] = useState([]);
+	console.log("notiMessages", notiMessages);
+	const notiMessagesData = new Map();
+
+	notiMessages
+		.filter((item) => item.sender !== currentChatUser?._id)
+		.forEach((msg) => {
+			const isSender = msg.sender === userInfo?._id;
+
+			const calculatedId = isSender ? msg.receiver : msg.sender;
+
+			const {_id, type, message, messageStatus, createdAt, sender, receiver} =
+				msg;
+
+			if (!notiMessagesData.get(calculatedId)) {
+				let user = {
+					messageId: _id,
+					type,
+					message,
+					messageStatus,
+					createdAt,
+					sender,
+					receiver,
+				};
+				if (isSender) {
+					user = {
+						...user,
+						totalUnreadMessages: 0,
+					};
+				} else {
+					user = {
+						...user,
+						totalUnreadMessages: messageStatus !== "read" ? 1 : 0,
+					};
+				}
+				notiMessagesData.set(calculatedId, {
+					...user,
+				});
+			} else if (messageStatus !== "read" && !isSender) {
+				const user = notiMessagesData.get(calculatedId);
+				notiMessagesData.set(calculatedId, {
+					...user,
+					totalUnreadMessages: user.totalUnreadMessages + 1,
+				});
+			}
+		});
 
 	useEffect(() => {
 		const getContacts = async () => {
@@ -28,7 +73,7 @@ function List() {
 			{userContacts.length > 0 &&
 				userContacts?.map((contact, index) => (
 					<Fragment key={index}>
-						<ChatListItem data={contact} />
+						<ChatListItem data={contact} notiMessagesData={notiMessagesData} />
 					</Fragment>
 				))}
 		</div>

@@ -4,29 +4,11 @@ import Image from "next/image";
 import {calculateTime} from "@/utils/CalculateTime";
 import MessageStatus from "../common/MessageStatus";
 import {FaCamera, FaMicrophone} from "react-icons/fa";
-import {unReadNotificationsFunc} from "@/utils/unReadNotifications";
 
-function ChatListItem({data}: any) {
-	const {
-		userInfo,
-		notifications,
-		pageType,
-		onlineUsers,
-		setCurrentChatUser,
-		notiMessages,
-	} = useAuthentication();
-	console.log("data?.sender?._id", data?.sender?._id);
-
-	const unreadNotifications = unReadNotificationsFunc(notifications);
-	const totalUnreadNotifications = unreadNotifications.filter(
-		(notification: any) => notification.sender === data?._id
-	).length;
-	const notiMessage = notiMessages.find(
-		(item: any) =>
-			item.sender === data?._id ||
-			(item.sender === userInfo?._id && item.receiver === data?._id)
-	);
-
+function ChatListItem({data, notiMessagesData}: any) {
+	const {userInfo, pageType, onlineUsers, setCurrentChatUser} =
+		useAuthentication();
+	const notiMessage = notiMessagesData.get(data._id);
 	const handleContactClick = () => {
 		if (pageType === "default") {
 			setCurrentChatUser({
@@ -91,7 +73,7 @@ function ChatListItem({data}: any) {
 									{data?.sender?._id === userInfo?._id && (
 										<MessageStatus messageStatus={data?.messageStatus} />
 									)}
-									{data?.sender?._id === userInfo?._id && <span>Bạn:</span>}
+									{notiMessage?.sender === userInfo?._id && <span>Bạn:</span>}
 									{data.type === "text" && (
 										<span className="truncate">
 											{notiMessage?.message || data.message}
@@ -110,10 +92,11 @@ function ChatListItem({data}: any) {
 								</div>
 							)}
 						</span>
-						{(data.totalUnreadMessages > 0 || totalUnreadNotifications > 0) && (
+						{(data.totalUnreadMessages > 0 ||
+							notiMessage?.totalUnreadMessages > 0) && (
 							<span className="bg-icon-green px-[5px] text-sm rounded-full">
 								{Number(data.totalUnreadMessages) +
-									Number(totalUnreadNotifications)}
+									Number(notiMessage?.totalUnreadMessages || 0)}
 							</span>
 						)}
 					</div>
