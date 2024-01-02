@@ -4,8 +4,8 @@ const nextConfig = {
 		domains: ["www.google.com", "lh3.googleusercontent.com", "localhost"],
 	},
 	env: {
-		NEXT_PUBLIC_ZEGO_APP_ID: 712659714,
-		NEXT_PUBLIC_ZEGO_SERVER_ID: "b65af45cc4f7c593df5395abfd1508fb",
+		NEXT_PUBLIC_ZEGO_APP_ID: 74785381,
+		NEXT_PUBLIC_ZEGO_SERVER_ID: "ca6498a22de9effabad21f1e2167601f",
 	},
 };
 

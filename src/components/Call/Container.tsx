@@ -6,11 +6,19 @@ import React, {useEffect, useState} from "react";
 import {MdOutlineCallEnd} from "react-icons/md";
 
 function Container({data}: any) {
-	const {userInfo, socket} = useAuthentication();
+	const {
+		userInfo,
+		socket,
+		setIncomingVoiceCall,
+		setIncomingVideoCall,
+		setVoiceCall,
+		setVideoCall,
+	} = useAuthentication();
+
 	const [callAccepted, setCallAccepted] = useState(false);
 	const [token, setToken] = useState(undefined);
 	const [zgVar, setZgVar] = useState<any>(undefined);
-	const [localStreams, setLocalStream] = useState<any>(undefined);
+	const [localStream, setLocalStream] = useState<any>(undefined);
 	const [publishStream, setPublishStream] = useState<any>(undefined);
 
 	useEffect(() => {
@@ -57,25 +65,29 @@ function Container({data}: any) {
 							vd.autoplay = true;
 							vd.playsInline = true;
 							vd.muted = false;
+							vd.className = "h-full w-full";
+
 							if (rmVideo) {
 								rmVideo.appendChild(vd);
 							}
 							zg.startPlayingStream(streamList[0].streamID, {
 								audio: true,
 								video: true,
-							}).then((stream) => {
-								vd.srcObject = stream;
-							});
+							}).then((stream) => (vd.srcObject = stream));
 						} else if (
 							updateType === "DELETE" &&
 							zg &&
-							localStreams &&
+							localStream &&
 							streamList[0].streamID
 						) {
-							zg.destroyStream(localStreams);
+							zg.destroyStream(localStream);
 							zg.stopPublishingStream(streamList[0]?.streamID);
 							zg.logoutRoom(data.roomId.toString());
-							// dispatchEvent({ typetype:reducerCases.END_CALL });
+
+							setIncomingVoiceCall(false);
+							setIncomingVideoCall(false);
+							setVoiceCall(false);
+							setVideoCall(false);
 						}
 					}
 				);
@@ -99,8 +111,9 @@ function Container({data}: any) {
 				});
 				const localVideo = document.getElementById("local-video");
 				const videoElement = document.createElement("video");
+
 				videoElement.id = "video-local-zego";
-				videoElement.className = "h-28 w-32";
+				videoElement.className = "h-28 w-28";
 				videoElement.autoplay = true;
 				videoElement.muted = false;
 				videoElement.playsInline = true;
@@ -134,14 +147,15 @@ function Container({data}: any) {
 				from: id,
 			});
 		}
-		// dispatch({
-		// 	type: reducerCases.END_CALL,
-		// });
+		setIncomingVoiceCall(false);
+		setIncomingVideoCall(false);
+		setVoiceCall(false);
+		setVideoCall(false);
 	};
 	return (
 		<div className="border-conversation-border border-l w-full bg-conversation-panel-background flex flex-col h-[100vh]  overflow-hidden items-center justify-center text-white">
 			<div className="flex flex-col gap-3 items-center">
-				<span className="text-5xl">{data.username}</span>
+				<span className="text-2xl">{data.username}</span>
 				<span className="text-lg">
 					{callAccepted && data.callType !== "video"
 						? "On going call"
@@ -150,22 +164,22 @@ function Container({data}: any) {
 			</div>
 
 			{(!callAccepted || data.callType === "audio") && (
-				<div className="my-24">
+				<div className="my-12">
 					<Image
 						src={`data:image/svg+xml;base64,${data?.avatarImage}`}
 						alt="avatar"
-						height={200}
-						width={200}
+						height={150}
+						width={150}
 						className="rounded-full"
 					/>
 				</div>
 			)}
-			<div className="my-5 relative" id="remote-video">
-				<div className="absolute bottom-5 right-5" id="local-video"></div>
+			<div className="relative w-[500px] h-[400px]" id="remote-video">
+				<div className="absolute top-0 right-0" id="local-video"></div>
 			</div>
-			<div className="h-16 w-16 bg-red-600 flex items-center justify-center rounded-full">
+			<div className="h-12 w-12 bg-red-600 flex items-center justify-center rounded-full">
 				<MdOutlineCallEnd
-					className="text-3xl cursor-pointer"
+					className="text-2xl cursor-pointer"
 					onClick={endCall}
 				/>
 			</div>

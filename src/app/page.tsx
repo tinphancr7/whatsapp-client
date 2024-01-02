@@ -62,15 +62,15 @@ function Main() {
 
 	const [socketEvent, setSocketEvent] = useState(false);
 
-	useEffect(() => {
-		socket?.current.on("msg-receive", (data: any) => {
-			console.log("msg-receive1", currentChatUser);
-			setMessages((prev: any) => [...prev, data.message]);
-		});
-		return () => {
-			socket?.current.off("msg-receive");
-		};
-	}, [currentChatUser?._id]);
+	// useEffect(() => {
+	// 	socket?.current.on("msg-receive", (data: any) => {
+	// 		console.log("msg-receive1", currentChatUser);
+	// 		setMessages((prev: any) => [...prev, data.message]);
+	// 	});
+	// 	return () => {
+	// 		socket?.current.off("msg-receive");
+	// 	};
+	// }, [currentChatUser?._id]);
 	useEffect(() => {
 		if (socket?.current && !socketEvent) {
 			socket?.current.on("msg-receive", (data: any) => {

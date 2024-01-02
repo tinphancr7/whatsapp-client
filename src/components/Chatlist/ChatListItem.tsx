@@ -8,7 +8,7 @@ import {FaCamera, FaMicrophone} from "react-icons/fa";
 function ChatListItem({data, notiMessagesData}: any) {
 	const {userInfo, pageType, onlineUsers, setCurrentChatUser} =
 		useAuthentication();
-	const notiMessage = notiMessagesData.get(data._id);
+	const notiMessage = notiMessagesData?.get(data._id);
 	const handleContactClick = () => {
 		if (pageType === "default") {
 			setCurrentChatUser({
