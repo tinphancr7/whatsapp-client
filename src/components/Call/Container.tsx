@@ -23,9 +23,7 @@ function Container({data}: any) {
 
 	useEffect(() => {
 		if (data.type === "out-going") {
-			socket.current.on("accept-call", () => {
-				setCallAccepted(true);
-			});
+			socket.current.on("accept-call", () => setCallAccepted(true));
 		} else {
 			setTimeout(() => {
 				setCallAccepted(true);
@@ -65,7 +63,6 @@ function Container({data}: any) {
 							vd.autoplay = true;
 							vd.playsInline = true;
 							vd.muted = false;
-							vd.className = "h-full w-full";
 
 							if (rmVideo) {
 								rmVideo.appendChild(vd);
@@ -174,7 +171,7 @@ function Container({data}: any) {
 					/>
 				</div>
 			)}
-			<div className="relative w-[500px] h-[400px]" id="remote-video">
+			<div className="relative" id="remote-video">
 				<div className="absolute top-0 right-0" id="local-video"></div>
 			</div>
 			<div className="h-12 w-12 bg-red-600 flex items-center justify-center rounded-full">
